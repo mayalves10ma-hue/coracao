@@ -1,0 +1,176 @@
+import { useState } from "react";
+import { MetricCard } from "@/components/dashboard/MetricCard";
+import { AnalystTable, Analyst } from "@/components/dashboard/AnalystTable";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TrendingUp, Users, Award, Target } from "lucide-react";
+
+// Mock data
+const mockAnalysts: Analyst[] = [
+  {
+    id: "1",
+    name: "Ana Silva",
+    channel: "Canal A",
+    indicators: { indicator1: 92, indicator2: 88, indicator3: 95, indicator4: 87 },
+    score: 91,
+    status: "success",
+  },
+  {
+    id: "2",
+    name: "Carlos Santos",
+    channel: "Canal A",
+    indicators: { indicator1: 78, indicator2: 82, indicator3: 75, indicator4: 80 },
+    score: 79,
+    status: "warning",
+  },
+  {
+    id: "3",
+    name: "Maria Oliveira",
+    channel: "Canal B",
+    indicators: { indicator1: 95, indicator2: 93, indicator3: 97, indicator4: 94 },
+    score: 95,
+    status: "success",
+  },
+  {
+    id: "4",
+    name: "João Pedro",
+    channel: "Canal B",
+    indicators: { indicator1: 65, indicator2: 58, indicator3: 62, indicator4: 60 },
+    score: 61,
+    status: "danger",
+  },
+  {
+    id: "5",
+    name: "Patricia Costa",
+    channel: "Canal A",
+    indicators: { indicator1: 85, indicator2: 88, indicator3: 84, indicator4: 86 },
+    score: 86,
+    status: "success",
+  },
+  {
+    id: "6",
+    name: "Roberto Lima",
+    channel: "Canal B",
+    indicators: { indicator1: 72, indicator2: 75, indicator3: 70, indicator4: 73 },
+    score: 73,
+    status: "warning",
+  },
+];
+
+const Index = () => {
+  const [period, setPeriod] = useState("daily");
+  const [selectedChannel, setSelectedChannel] = useState("all");
+
+  const filteredAnalysts = selectedChannel === "all"
+    ? mockAnalysts
+    : mockAnalysts.filter(a => a.channel === selectedChannel);
+
+  const avgScore = Math.round(filteredAnalysts.reduce((acc, a) => acc + a.score, 0) / filteredAnalysts.length);
+  const topPerformers = filteredAnalysts.filter(a => a.status === "success").length;
+  const needsAttention = filteredAnalysts.filter(a => a.status === "danger").length;
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-border bg-card">
+        <div className="container mx-auto px-6 py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Painel de Performance</h1>
+              <p className="text-muted-foreground mt-1">Acompanhamento de analistas por canal</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Select value={period} onValueChange={setPeriod}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Diário</SelectItem>
+                  <SelectItem value="weekly">Semanal</SelectItem>
+                  <SelectItem value="monthly">Mensal</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={selectedChannel} onValueChange={setSelectedChannel}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos Canais</SelectItem>
+                  <SelectItem value="Canal A">Canal A</SelectItem>
+                  <SelectItem value="Canal B">Canal B</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="default">Exportar Dados</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-6 py-8">
+        {/* Metrics Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <MetricCard
+            title="Total de Analistas"
+            value={filteredAnalysts.length}
+            icon={Users}
+            variant="default"
+          />
+          <MetricCard
+            title="Score Médio"
+            value={avgScore}
+            icon={Award}
+            trend={{ value: 5.2, isPositive: true }}
+            variant="success"
+          />
+          <MetricCard
+            title="Top Performers"
+            value={topPerformers}
+            icon={TrendingUp}
+            variant="success"
+          />
+          <MetricCard
+            title="Requer Atenção"
+            value={needsAttention}
+            icon={Target}
+            variant={needsAttention > 0 ? "danger" : "success"}
+          />
+        </div>
+
+        {/* Analyst Table */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">Desempenho Individual</h2>
+            <span className="text-sm text-muted-foreground">
+              {period === "daily" && "Dados de hoje"}
+              {period === "weekly" && "Últimos 7 dias"}
+              {period === "monthly" && "Últimos 30 dias"}
+            </span>
+          </div>
+          <AnalystTable analysts={filteredAnalysts} />
+        </div>
+
+        {/* Legend */}
+        <div className="mt-8 p-6 bg-card rounded-lg border border-border">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Legenda do Farol</h3>
+          <div className="flex flex-wrap gap-6">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-success shadow-lg shadow-success/50" />
+              <span className="text-sm text-muted-foreground">Excelente (≥80%)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-warning shadow-lg shadow-warning/50" />
+              <span className="text-sm text-muted-foreground">Atenção (60-79%)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-destructive shadow-lg shadow-destructive/50" />
+              <span className="text-sm text-muted-foreground">Crítico (&lt;60%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Index;
