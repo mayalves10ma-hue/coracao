@@ -254,6 +254,19 @@
   .girando{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:gira .7s linear infinite;vertical-align:-2px;margin-right:7px}
   @keyframes gira{to{transform:rotate(360deg)}}
 
+  /* ── animações sutis de entrada ── */
+  @keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes donutIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+  @keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes growY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  .card-graf,.sup-card{animation:cardIn .32s ease both}
+  .donut-wrap svg{animation:donutIn .5s ease both;transform-origin:center}
+  .bar-row .bf{transform-origin:left center;animation:growX .55s cubic-bezier(.2,.8,.3,1) both}
+  .colunas .cb{transform-origin:bottom center;animation:growY .5s cubic-bezier(.2,.8,.3,1) both}
+  .btn-azul:hover,.btn-claro:hover{transform:translateY(-1px)}
+  .btn-azul:hover{box-shadow:0 8px 18px -7px rgba(37,99,235,.6)}
+  .btn-ico:hover{transform:translateY(-1px)}
+
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
