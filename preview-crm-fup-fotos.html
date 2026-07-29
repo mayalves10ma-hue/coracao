@@ -5,137 +5,185 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Preview · Redesign CRM FUP Fotos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0E1F38; --ink-2:#3D4A5C; --ink-3:#8792A3;
-    --paper:#F4F6F9; --surface:#FFFFFF; --line:#E1E6EC; --line-2:#CFD6DF;
-    --navy:#0E1F38;                       /* chrome escuro QuintoAndar */
-    --signal:#1E5BD6; --signal-dim:#E7EEFB; /* azul de assinatura */
-    --azul-claro:#4A90E2;
-    --ok:#1B7F4F; --alerta:#B7791F; --ruim:#C0332B;
-    --steel:#1E5BD6; --steel-dim:#E7EEFB;
-    --radius:9px; --radius-lg:12px;
+    /* ── superfícies e texto ── */
+    --bg:#F5F7FA; --surface:#FFFFFF; --surface-2:#FBFCFE;
+    --line:#EAEDF2; --line-2:#DCE1E9;
+    --ink:#111827; --ink-2:#4B5563; --ink-3:#9AA3B2;
+
+    /* ── marca (azul-marinho + azul de assinatura) ── */
+    --navy:#0F1B2E; --navy-2:#1B2B45;
+    --brand:#2563EB; --brand-tint:#EEF3FE; --brand-ink:#1D4FD7;
+    --sky:#5B9BE8;
+
+    /* ── semânticos, dessaturados ── */
+    --ok:#067A52; --ok-tint:#E7F6EF;
+    --warn:#B26A00; --warn-tint:#FBF1E0;
+    --bad:#C0392E; --bad-tint:#FBEAE7;
+
+    /* ── escala ── */
+    --r-sm:7px; --r:11px; --r-lg:14px; --r-full:999px;
+    --sh-1:0 1px 2px rgba(16,24,40,.05);
+    --sh-2:0 12px 32px -10px rgba(16,24,40,.16);
     --mono:'IBM Plex Mono',ui-monospace,monospace;
-    --sans:'Inter',system-ui,sans-serif;
+    --sans:'Inter',system-ui,-apple-system,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased}
-  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .ic{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
-  /* ── nota de preview (não faz parte do CRM) ── */
-  .nota{background:var(--ink);color:#fff;font-size:12.5px;padding:10px 20px;text-align:center;letter-spacing:.01em}
-  .nota b{color:#7FB0F5}
+  /* ── nota de preview ── */
+  .nota{background:var(--navy);color:#D7E0EE;font-size:12px;padding:9px 22px;text-align:center;letter-spacing:.01em}
+  .nota b{color:#8FB4F2;font-weight:600}
 
   /* ── header ── */
-  header.topbar{background:var(--ink);color:#fff;padding:14px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand .mark{width:26px;height:26px;border-radius:6px;background:var(--signal);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:12px}
-  .brand .name{font-weight:700;font-size:15px;letter-spacing:-.01em}
-  .brand .name span{color:#7FB0F5;font-weight:600}
-  .userchip{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#AEBBCC}
+  header.topbar{background:var(--navy);color:#fff;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,var(--brand),#1B45B8);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
+  .brand .name{font-weight:600;font-size:15px;letter-spacing:-.015em}
+  .brand .name span{color:#8FB4F2;font-weight:500}
+  .userchip{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#9FADC2;line-height:1.3}
   .userchip b{color:#fff;font-weight:600}
-  .avatar{width:28px;height:28px;border-radius:6px;background:#1C3357;display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:11.5px;color:#fff;border:1px solid #2A4570}
+  .userchip .role{font-size:11px;color:#7C8AA3}
+  .avatar{width:32px;height:32px;border-radius:9px;background:var(--navy-2);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:12px;color:#fff;border:1px solid #29406A}
 
   /* ── tabs ── */
-  nav.tabs{background:var(--surface);border-bottom:1px solid var(--line);padding:0 26px;display:flex;gap:4px}
-  nav.tabs button{appearance:none;border:0;background:none;cursor:pointer;font:600 12.5px var(--sans);color:var(--ink-3);
-    padding:13px 4px;margin-right:22px;border-bottom:2px solid transparent;letter-spacing:.01em}
-  nav.tabs button.on{color:var(--ink);border-color:var(--signal)}
-  nav.tabs button .n{font-family:var(--mono);font-weight:600;font-size:11px;color:var(--ink-3);margin-left:5px}
-  nav.tabs button.on .n{color:var(--signal)}
+  nav.tabs{background:var(--surface);border-bottom:1px solid var(--line);padding:0 24px;display:flex;gap:26px;position:sticky;top:0;z-index:5}
+  nav.tabs button{appearance:none;border:0;background:none;cursor:pointer;font:600 13px var(--sans);color:var(--ink-3);
+    padding:15px 0 13px;border-bottom:2px solid transparent;letter-spacing:.005em;transition:color .15s}
+  nav.tabs button:hover{color:var(--ink-2)}
+  nav.tabs button.on{color:var(--ink);border-color:var(--brand)}
 
-  main{max-width:1080px;margin:0 auto;padding:22px 26px 70px}
+  main{max-width:1060px;margin:0 auto;padding:24px 24px 72px}
 
-  /* ── tira de indicadores: a assinatura do redesign ── */
-  .ticket{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);display:flex;overflow:hidden;margin-bottom:22px}
-  .ticket .cell{flex:1;padding:16px 18px;border-right:1px solid var(--line)}
+  /* ── tira de indicadores ── */
+  .ticket{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);display:flex;overflow:hidden;margin-bottom:24px;box-shadow:var(--sh-1)}
+  .ticket .cell{flex:1;padding:15px 18px;border-right:1px solid var(--line);position:relative}
   .ticket .cell:last-child{border-right:0}
-  .ticket .lbl{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
-  .ticket .val{font-family:var(--mono);font-weight:600;font-size:23px;letter-spacing:-.01em}
-  .ticket .val.alerta{color:var(--alerta)} .ticket .val.ok{color:var(--ok)} .ticket .val.ruim{color:var(--ruim)}
-  .ticket .delta{font-size:10.5px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)}
+  .ticket .lbl{font-size:11px;font-weight:500;letter-spacing:.02em;color:var(--ink-3);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+  .ticket .lbl .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+  .ticket .lbl.warn .dot{background:var(--warn)} .ticket .lbl.ok .dot{background:var(--ok)} .ticket .lbl.bad .dot{background:var(--bad)}
+  .ticket .val{font-family:var(--mono);font-weight:600;font-size:26px;line-height:1;letter-spacing:-.02em}
+  .ticket .val.warn{color:var(--warn)} .ticket .val.ok{color:var(--ok)} .ticket .val.bad{color:var(--bad)}
+  .ticket .delta{font-size:11px;color:var(--ink-2);margin-top:7px;display:inline-flex;align-items:center;gap:4px;font-weight:500}
+  .ticket .delta.up{color:var(--ok)} .ticket .delta.down{color:var(--bad)}
+  .ticket .delta .ic{width:13px;height:13px}
 
-  h2.secao{font-size:13px;font-weight:700;letter-spacing:.01em;margin:26px 0 12px;color:var(--ink-2)}
+  h2.secao{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:26px 0 13px;color:var(--ink-3)}
 
   /* ── subpastas (réguas) ── */
-  .subpastas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .subpastas{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
   .subpastas button{appearance:none;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);
-    font:600 11.5px var(--sans);padding:6px 12px;border-radius:999px;cursor:pointer}
-  .subpastas button.ativo{color:#fff;background:var(--signal);border-color:var(--signal)}
-  .subpastas .n{font-family:var(--mono);font-size:10.5px;opacity:.8;margin-left:5px}
+    font:500 12.5px var(--sans);padding:7px 13px;border-radius:var(--r-full);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .12s}
+  .subpastas button:hover{border-color:var(--ink-3);color:var(--ink)}
+  .subpastas button.ativo{color:#fff;background:var(--brand);border-color:var(--brand);box-shadow:var(--sh-1)}
+  .subpastas .n{font-family:var(--mono);font-size:11px;font-weight:600;padding:1px 7px;border-radius:var(--r-full);background:rgba(17,24,39,.06);color:var(--ink-2)}
+  .subpastas button.ativo .n{background:rgba(255,255,255,.22);color:#fff}
 
   /* ── lista de jobs ── */
-  .lista{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
-  .job{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line);position:relative;cursor:pointer;transition:background .1s}
+  .lista{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1)}
+  .job{display:flex;align-items:center;gap:16px;padding:14px 18px 14px 20px;border-bottom:1px solid var(--line);position:relative;cursor:pointer;transition:background .1s}
   .job:last-child{border-bottom:0}
-  .job:hover{background:#FBFAF8}
-  .job::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
-  .job.b1::before{background:var(--steel)} .job.b2::before{background:var(--alerta)} .job.b3::before{background:var(--ruim)}
-  .job.bc::before{background:var(--ok)} .job.bs::before{background:#4A90E2}
+  .job:hover{background:var(--surface-2)}
+  .job::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0}
+  .job.b1::before{background:var(--brand)} .job.b2::before{background:var(--warn)} .job.b3::before{background:var(--bad)}
+  .job.bc::before{background:var(--ok)} .job.bs::before{background:var(--sky)}
 
   .job .pp-col{flex:1.3;min-width:0}
-  .job .pp{font-weight:600;font-size:13.5px;letter-spacing:-.005em}
-  .job .ids{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:2px}
-  .job .meta{flex:2;display:flex;gap:6px;flex-wrap:wrap}
-  .chip{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:3px 8px;font-size:10.5px;color:var(--ink-2);white-space:nowrap}
-  .chip.regua{background:var(--steel-dim);border-color:transparent;color:var(--steel);font-weight:600}
-  .chip.tpl{font-family:var(--mono);background:#EEF2F8;color:#2C4A7C;border-color:transparent;font-size:10px}
+  .job .pp{font-weight:600;font-size:13.5px;letter-spacing:-.01em}
+  .job .ids{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:3px}
+  .job .meta{flex:2;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:3px 9px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;line-height:1.6}
+  .chip.regua{background:var(--brand-tint);border-color:transparent;color:var(--brand-ink);font-weight:600}
+  .chip.tpl{font-family:var(--mono);background:#F1F4F9;color:#3A5480;border-color:transparent;font-size:11px}
+  .chip .ic{width:13px;height:13px;color:var(--ink-3)}
+  .chip .cnt{font-family:var(--mono);font-weight:600;color:var(--ink-2)}
   .job .st{flex:0 0 auto;text-align:right}
-  .badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.02em;padding:4px 10px;border-radius:999px}
-  .badge.aviso{background:#FCEFDA;color:var(--alerta)}
-  .badge.ok{background:var(--signal-dim);color:var(--ok)}
-  .badge.ruim{background:#FBE6E4;color:var(--ruim)}
-  .badge.neutro{background:var(--paper);color:var(--ink-3);border:1px solid var(--line)}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;letter-spacing:.005em;padding:5px 11px;border-radius:var(--r-full)}
+  .badge .ic{width:13px;height:13px}
+  .badge.warn{background:var(--warn-tint);color:var(--warn)}
+  .badge.ok{background:var(--ok-tint);color:var(--ok)}
+  .badge.bad{background:var(--bad-tint);color:var(--bad)}
+  .badge.neutro{background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line)}
 
   /* ── dashboard ── */
-  .grade{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px 20px}
-  .card h3{font-size:13px;font-weight:700;margin-bottom:3px}
-  .card .dica{font-size:11.5px;color:var(--ink-3);margin-bottom:16px}
+  .grade{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-1)}
+  .card h3{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+  .card .dica{font-size:12px;color:var(--ink-3);margin-bottom:18px}
 
-  .donut{display:flex;align-items:center;gap:22px}
-  .donut .ring{width:132px;height:132px;border-radius:50%;position:relative;
-    background:conic-gradient(#1E5BD6 0 46%, var(--alerta) 46% 68%, var(--ruim) 68% 79%, var(--ok) 79% 92%, #4A90E2 92% 100%)}
-  .donut .ring::after{content:"";position:absolute;top:19px;right:19px;bottom:19px;left:19px;background:var(--surface);border-radius:50%;display:grid}
-  .donut .center{position:absolute;top:19px;right:19px;bottom:19px;left:19px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .donut .center b{font-family:var(--mono);font-size:20px}
-  .donut .center span{font-size:9px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-  .legenda{display:flex;flex-direction:column;gap:8px;font-size:12px}
-  .legenda div{display:flex;align-items:center;gap:8px}
-  .legenda i{width:9px;height:9px;border-radius:2px}
-  .legenda b{margin-left:auto;font-family:var(--mono)}
+  .donut{display:flex;align-items:center;gap:26px}
+  .donut-wrap{position:relative;width:140px;height:140px;flex:none}
+  .donut-wrap svg{transform:rotate(-90deg)}
+  .donut-wrap .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .donut-wrap .center b{font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:-.02em}
+  .donut-wrap .center span{font-size:10px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase;margin-top:3px}
+  .legenda{display:flex;flex-direction:column;gap:10px;font-size:12.5px;flex:1}
+  .legenda div{display:flex;align-items:center;gap:9px;color:var(--ink-2)}
+  .legenda i{width:9px;height:9px;border-radius:3px;flex:none}
+  .legenda b{margin-left:auto;font-family:var(--mono);font-weight:600;color:var(--ink)}
 
-  .barra-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:12px}
-  .barra-row .nome{flex:0 0 128px;font-weight:500}
-  .barra-row .trilho{flex:1;height:8px;background:var(--paper);border-radius:4px;overflow:hidden}
-  .barra-row .fill{height:100%;border-radius:4px}
-  .barra-row .pct{flex:0 0 auto;font-family:var(--mono);color:var(--ink-2);min-width:98px;text-align:right;font-size:11px}
+  .barra-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:12.5px}
+  .barra-row:last-child{margin-bottom:0}
+  .barra-row .nome{flex:0 0 124px;font-weight:500;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barra-row .trilho{flex:1;height:7px;background:var(--bg);border-radius:var(--r-full);overflow:hidden}
+  .barra-row .fill{height:100%;border-radius:var(--r-full)}
+  .barra-row .pct{flex:0 0 auto;font-family:var(--mono);color:var(--ink-2);min-width:96px;text-align:right;font-size:11.5px;font-weight:500}
 
   /* ── modal preview ── */
-  .modal-preview{margin-top:26px}
-  .modal-box{max-width:520px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px 24px;box-shadow:0 20px 44px rgba(20,24,31,.10)}
-  .modal-box h2{font-size:16px;font-weight:700;letter-spacing:-.01em}
-  .modal-box .sub{color:var(--ink-2);font-weight:600;font-size:12.5px;margin:2px 0 14px}
-  .info-box{background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:11px 13px;font-size:12px;color:var(--ink-2);line-height:1.7;margin-bottom:14px}
-  .info-box b{color:var(--ink)}
-  .check-row{display:flex;gap:22px;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:11px 14px;margin-bottom:12px}
-  .check-item{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600}
-  .check-item .box{width:15px;height:15px;border:1.5px solid var(--line-2);border-radius:4px}
-  .check-item .box.on{background:var(--signal);border-color:var(--signal)}
-  .campo{margin-bottom:12px}
-  .campo label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
-  .campo .fake-select{border:1px solid var(--line-2);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--ink-3);background:var(--surface)}
-  .acoes{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
-  .btn{border:0;border-radius:7px;padding:9px 16px;font:600 13px var(--sans);cursor:pointer}
+  .modal-preview{margin-top:4px}
+  .modal-box{max-width:540px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px 26px;box-shadow:var(--sh-2)}
+  .modal-box h2{font-size:17px;font-weight:600;letter-spacing:-.02em}
+  .modal-box .sub{color:var(--ink-2);font-size:12.5px;margin:4px 0 16px}
+  .modal-box .sub b{color:var(--ink);font-weight:600}
+  .info-box{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;font-size:12.5px;color:var(--ink-2);line-height:1.85;margin-bottom:16px}
+  .info-box b{color:var(--ink);font-weight:600}
+  .check-row{display:flex;gap:10px;margin-bottom:16px}
+  .check-item{flex:1;display:flex;align-items:center;gap:9px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:11px 14px;font-size:13px;font-weight:500;cursor:pointer}
+  .check-item .box{width:18px;height:18px;border:1.6px solid var(--line-2);border-radius:6px;display:grid;place-items:center;color:#fff;flex:none}
+  .check-item .box .ic{width:12px;height:12px;stroke-width:2.2;opacity:0}
+  .check-item .box.on{background:var(--brand);border-color:var(--brand)}
+  .check-item .box.on .ic{opacity:1}
+  .campo{margin-bottom:14px}
+  .campo label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+  .campo .fake-select{border:1px solid var(--line-2);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--ink);background:var(--surface);display:flex;align-items:center;justify-content:space-between}
+  .campo .fake-select.ph{color:var(--ink-3)}
+  .campo .fake-select .ic{width:15px;height:15px;color:var(--ink-3)}
+  .acoes{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+  .btn{border:0;border-radius:var(--r);padding:10px 18px;font:600 13px var(--sans);cursor:pointer;transition:filter .12s}
+  .btn:hover{filter:brightness(.97)}
   .btn.claro{background:var(--surface);border:1px solid var(--line-2);color:var(--ink)}
-  .btn.escuro{background:var(--ink);color:#fff}
+  .btn.escuro{background:var(--brand);color:#fff;box-shadow:var(--sh-1)}
 
-  footer.notas{max-width:1080px;margin:0 auto;padding:0 26px 40px;color:var(--ink-3);font-size:11.5px;line-height:1.7}
-  footer.notas b{color:var(--ink-2)}
+  footer.notas{max-width:1060px;margin:0 auto;padding:8px 24px 44px;color:var(--ink-3);font-size:12px;line-height:1.85}
+  footer.notas b{color:var(--ink-2);font-weight:600}
+
+  @media (max-width:720px){
+    .grade{grid-template-columns:1fr}
+    .job{flex-wrap:wrap}
+    .job .meta{flex-basis:100%;order:3}
+    .ticket{flex-wrap:wrap}
+    .ticket .cell{flex-basis:50%;border-bottom:1px solid var(--line)}
+  }
 </style>
 </head>
 <body>
+
+<!-- sprite de ícones (stroke, currentColor) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-phone" viewBox="0 0 16 16"><path d="M14.7 11.3v2a1.33 1.33 0 0 1-1.45 1.33 12.9 12.9 0 0 1-5.62-2 12.7 12.7 0 0 1-3.9-3.9 12.9 12.9 0 0 1-2-5.65A1.33 1.33 0 0 1 3.06 1.65h2a1.33 1.33 0 0 1 1.33 1.15c.08.64.24 1.27.46 1.87a1.33 1.33 0 0 1-.3 1.4l-.85.85a10.67 10.67 0 0 0 3.9 3.9l.85-.85a1.33 1.33 0 0 1 1.4-.3c.6.22 1.23.38 1.87.46a1.33 1.33 0 0 1 1.15 1.35z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 16 16"><path d="M14 9.33a1.33 1.33 0 0 1-1.33 1.34H4.67L2 13.33V4a1.33 1.33 0 0 1 1.33-1.33h9.34A1.33 1.33 0 0 1 14 4z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="m13.5 4.5-7 7L3 8"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 16 16"><path d="M12 5.33a4 4 0 1 0-8 0c0 4.67-2 6-2 6h12s-2-1.33-2-6"/><path d="M9.15 14a1.33 1.33 0 0 1-2.3 0"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3"/><path d="M8 5.2v3.4M8 10.8h.01"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3"/><path d="M8 4.6V8l2.3 1.4"/></symbol>
+  <symbol id="i-up" viewBox="0 0 16 16"><path d="M8 12.5v-9M4.5 7 8 3.5 11.5 7"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></symbol>
+</svg>
 
 <div class="nota">Pré-visualização de redesign — mesmas telas e funções do CRM · <b>nada aqui está conectado à planilha</b></div>
 
@@ -144,23 +192,26 @@
     <div class="mark">FS</div>
     <div class="name">FUP Fotos <span>· Carteirização FSS</span></div>
   </div>
-  <div class="userchip"><div class="avatar">DO</div><div><b>douglas.oliveira</b><br>Supervisor</div></div>
+  <div class="userchip">
+    <div style="text-align:right"><b>douglas.oliveira</b><br><span class="role">Supervisor</span></div>
+    <div class="avatar">DO</div>
+  </div>
 </header>
 
 <nav class="tabs">
-  <button class="on" onclick="mostrar('fila')">Fila do analista</button>
-  <button onclick="mostrar('dash')">Dashboard Operacional</button>
-  <button onclick="mostrar('modal')">Modal de tratativa</button>
+  <button class="on" onclick="mostrar('fila',this)">Fila do analista</button>
+  <button onclick="mostrar('dash',this)">Dashboard operacional</button>
+  <button onclick="mostrar('modal',this)">Modal de tratativa</button>
 </nav>
 
 <main>
 
   <div id="v-fila">
     <div class="ticket">
-      <div class="cell"><div class="lbl">Ativos na base</div><div class="val num">312</div></div>
-      <div class="cell"><div class="lbl">⏳ Pendentes hoje</div><div class="val num alerta">27</div></div>
-      <div class="cell"><div class="lbl">Tratados hoje</div><div class="val num ok">64</div></div>
-      <div class="cell"><div class="lbl">Confirmar agora</div><div class="val num ruim">5</div></div>
+      <div class="cell"><div class="lbl"><span class="dot"></span>Ativos na base</div><div class="val num">312</div></div>
+      <div class="cell"><div class="lbl warn"><span class="dot"></span>Pendentes hoje</div><div class="val num warn">27</div></div>
+      <div class="cell"><div class="lbl ok"><span class="dot"></span>Tratados hoje</div><div class="val num ok">64</div></div>
+      <div class="cell"><div class="lbl bad"><span class="dot"></span>Confirmar agora</div><div class="val num bad">5</div></div>
     </div>
 
     <h2 class="secao">Fase 1 · Janela</h2>
@@ -177,17 +228,17 @@
         <div class="meta">
           <span class="chip regua">Ligação + Chat</span>
           <span class="chip tpl">fupfotos_d2_fss1</span>
-          <span class="chip">☎ 1 · 💬 0</span>
+          <span class="chip"><svg class="ic"><use href="#i-phone"/></svg><span class="cnt">1</span><svg class="ic"><use href="#i-chat"/></svg><span class="cnt">0</span></span>
         </div>
-        <div class="st"><span class="badge aviso">📢 Comunicação D2 · HOJE</span></div>
+        <div class="st"><span class="badge warn"><svg class="ic"><use href="#i-bell"/></svg>Comunicação D2 · Hoje</span></div>
       </div>
       <div class="job b1">
         <div class="pp-col"><div class="pp">Caio Ribeiro de Mello</div><div class="ids">#893746003 · PP 234300 · 27/07/2026</div></div>
         <div class="meta">
           <span class="chip">Sem contato / Caixa postal</span>
-          <span class="chip">☎ 2 · 💬 1</span>
+          <span class="chip"><svg class="ic"><use href="#i-phone"/></svg><span class="cnt">2</span><svg class="ic"><use href="#i-chat"/></svg><span class="cnt">1</span></span>
         </div>
-        <div class="st"><span class="badge ok">✅ D2 tratado</span></div>
+        <div class="st"><span class="badge ok"><svg class="ic"><use href="#i-check"/></svg>D2 tratado</span></div>
       </div>
       <div class="job b3">
         <div class="pp-col"><div class="pp">Marina Torres Aquino</div><div class="ids">#895609896 · PP 100542 · 12/07/2026</div></div>
@@ -195,7 +246,7 @@
           <span class="chip regua">Chat encerramento</span>
           <span class="chip tpl">fupfotos_d21_fss1</span>
         </div>
-        <div class="st"><span class="badge aviso">📢 Comunicação D21 · HOJE</span></div>
+        <div class="st"><span class="badge warn"><svg class="ic"><use href="#i-bell"/></svg>Comunicação D21 · Hoje</span></div>
       </div>
       <div class="job bc">
         <div class="pp-col"><div class="pp">Igor Salles Prado</div><div class="ids">#895610441 · PP 552310 · 22/07/2026</div></div>
@@ -203,25 +254,25 @@
           <span class="chip regua">Confirmar dados da sessão</span>
           <span class="chip tpl">confirmação_fss1</span>
         </div>
-        <div class="st"><span class="badge ruim">📞 Confirmar — job amanhã</span></div>
+        <div class="st"><span class="badge bad"><svg class="ic"><use href="#i-phone"/></svg>Confirmar — job amanhã</span></div>
       </div>
       <div class="job bs">
         <div class="pp-col"><div class="pp">Helena Duarte Vidal</div><div class="ids">#895611538 · PP 771902 · 19/07/2026</div></div>
         <div class="meta">
           <span class="chip">PP Indeciso</span>
         </div>
-        <div class="st"><span class="badge ruim">🚨 Retorno hoje</span></div>
+        <div class="st"><span class="badge bad"><svg class="ic"><use href="#i-alert"/></svg>Retorno hoje</span></div>
       </div>
     </div>
   </div>
 
   <div id="v-dash" style="display:none">
     <div class="ticket">
-      <div class="cell"><div class="lbl">Ativos</div><div class="val num">312</div></div>
-      <div class="cell"><div class="lbl">⏳ Pendentes</div><div class="val num alerta">27</div><div class="delta">▲ 4 vs. LW</div></div>
-      <div class="cell"><div class="lbl">Conversão</div><div class="val num ok">18%</div><div class="delta">▲ 2 p.p. vs. LW</div></div>
-      <div class="cell"><div class="lbl">Em confirmação</div><div class="val num">41</div></div>
-      <div class="cell"><div class="lbl">🚨 Agir agora</div><div class="val num ruim">9</div></div>
+      <div class="cell"><div class="lbl"><span class="dot"></span>Ativos</div><div class="val num">312</div></div>
+      <div class="cell"><div class="lbl warn"><span class="dot"></span>Pendentes</div><div class="val num warn">27</div><div class="delta down"><svg class="ic" style="transform:rotate(180deg)"><use href="#i-up"/></svg>4 vs. LW</div></div>
+      <div class="cell"><div class="lbl ok"><span class="dot"></span>Conversão</div><div class="val num ok">18%</div><div class="delta up"><svg class="ic"><use href="#i-up"/></svg>2 p.p. vs. LW</div></div>
+      <div class="cell"><div class="lbl"><span class="dot"></span>Em confirmação</div><div class="val num">41</div></div>
+      <div class="cell"><div class="lbl bad"><span class="dot"></span>Agir agora</div><div class="val num bad">9</div></div>
     </div>
 
     <div class="grade">
@@ -229,13 +280,23 @@
         <h3>Distribuição da carteira</h3>
         <div class="dica">Onde estão os imóveis ativos agora.</div>
         <div class="donut">
-          <div class="ring"><div class="center"><b>312</b><span>ativos</span></div></div>
+          <div class="donut-wrap">
+            <svg viewBox="0 0 42 42" width="140" height="140">
+              <circle cx="21" cy="21" r="15.915" fill="none" stroke="var(--bg)" stroke-width="5"/>
+              <circle cx="21" cy="21" r="15.915" fill="none" stroke="#2563EB" stroke-width="5" stroke-dasharray="46 54"  stroke-dashoffset="0"/>
+              <circle cx="21" cy="21" r="15.915" fill="none" stroke="#B26A00" stroke-width="5" stroke-dasharray="22 78"  stroke-dashoffset="-46"/>
+              <circle cx="21" cy="21" r="15.915" fill="none" stroke="#C0392E" stroke-width="5" stroke-dasharray="11 89"  stroke-dashoffset="-68"/>
+              <circle cx="21" cy="21" r="15.915" fill="none" stroke="#067A52" stroke-width="5" stroke-dasharray="13 87"  stroke-dashoffset="-79"/>
+              <circle cx="21" cy="21" r="15.915" fill="none" stroke="#5B9BE8" stroke-width="5" stroke-dasharray="8 92"   stroke-dashoffset="-92"/>
+            </svg>
+            <div class="center"><b>312</b><span>ativos</span></div>
+          </div>
           <div class="legenda">
-            <div><i style="background:#1E5BD6"></i>Fase 1 · Janela<b>144</b></div>
-            <div><i style="background:var(--alerta)"></i>Fase 2 · Manutenção<b>68</b></div>
-            <div><i style="background:var(--ruim)"></i>Fase 3 · Resgate<b>34</b></div>
-            <div><i style="background:var(--ok)"></i>Confirmação<b>41</b></div>
-            <div><i style="background:#4A90E2"></i>Snoozed<b>25</b></div>
+            <div><i style="background:#2563EB"></i>Fase 1 · Janela<b>144</b></div>
+            <div><i style="background:#B26A00"></i>Fase 2 · Manutenção<b>68</b></div>
+            <div><i style="background:#C0392E"></i>Fase 3 · Resgate<b>34</b></div>
+            <div><i style="background:#067A52"></i>Confirmação<b>41</b></div>
+            <div><i style="background:#5B9BE8"></i>Snoozed<b>25</b></div>
           </div>
         </div>
       </div>
@@ -244,9 +305,9 @@
         <h3>Coerência com a régua</h3>
         <div class="dica">% em dia com o toque exigido hoje.</div>
         <div class="barra-row"><span class="nome">yuri.adriel</span><span class="trilho"><span class="fill" style="width:91%;background:var(--ok)"></span></span><span class="pct">91% · 48/53</span></div>
-        <div class="barra-row"><span class="nome">nyckolas.gabryel</span><span class="trilho"><span class="fill" style="width:78%;background:var(--alerta)"></span></span><span class="pct">78% · 46/59</span></div>
-        <div class="barra-row"><span class="nome">silva5.kauane</span><span class="trilho"><span class="fill" style="width:62%;background:var(--alerta)"></span></span><span class="pct">62% · 39/63</span></div>
-        <div class="barra-row"><span class="nome">dias.isabeli</span><span class="trilho"><span class="fill" style="width:54%;background:var(--ruim)"></span></span><span class="pct">54% · 34/63</span></div>
+        <div class="barra-row"><span class="nome">nyckolas.gabryel</span><span class="trilho"><span class="fill" style="width:78%;background:var(--warn)"></span></span><span class="pct">78% · 46/59</span></div>
+        <div class="barra-row"><span class="nome">silva5.kauane</span><span class="trilho"><span class="fill" style="width:62%;background:var(--warn)"></span></span><span class="pct">62% · 39/63</span></div>
+        <div class="barra-row"><span class="nome">dias.isabeli</span><span class="trilho"><span class="fill" style="width:54%;background:var(--bad)"></span></span><span class="pct">54% · 34/63</span></div>
       </div>
     </div>
   </div>
@@ -257,12 +318,12 @@
       <div class="sub">Imóvel 895444785 — Data do Mailing: 27/07/2026 · <b>ID PP 328215</b></div>
       <div class="info-box"><b>Régua:</b> Fase 1 · Janela · D2 — Ligação + Chat · template: <b>fupfotos_d2_fss1</b><br><b>Toques:</b> F1 0 Chat / 1 Call · F2 0 Chat / 0 Call</div>
       <div class="check-row">
-        <div class="check-item"><span class="box on"></span>Call feita</div>
-        <div class="check-item"><span class="box"></span>Wpp enviado</div>
+        <div class="check-item"><span class="box on"><svg class="ic"><use href="#i-check"/></svg></span>Call feita</div>
+        <div class="check-item"><span class="box"><svg class="ic"><use href="#i-check"/></svg></span>Wpp enviado</div>
       </div>
-      <div class="campo"><label>Tabulação</label><div class="fake-select">Sem contato</div></div>
-      <div class="campo"><label>Sub Tabulação</label><div class="fake-select">Não atendeu</div></div>
-      <div class="campo"><label>Observações</label><div class="fake-select" style="color:var(--ink-3)">Detalhes do contato…</div></div>
+      <div class="campo"><label>Tabulação</label><div class="fake-select">Sem contato<svg class="ic"><use href="#i-chevron"/></svg></div></div>
+      <div class="campo"><label>Sub Tabulação</label><div class="fake-select">Não atendeu<svg class="ic"><use href="#i-chevron"/></svg></div></div>
+      <div class="campo"><label>Observações</label><div class="fake-select ph">Detalhes do contato…</div></div>
       <div class="acoes"><button class="btn claro">Cancelar</button><button class="btn escuro">Salvar tratativa</button></div>
     </div>
   </div>
@@ -270,19 +331,19 @@
 </main>
 
 <footer class="notas">
-  <b>O que mudou visualmente:</b> azul-marinho QuintoAndar no header no lugar do azul claro chapado; bordas finas em vez de sombra flutuante;
-  cantos menos arredondados; números e IDs em monoespaçada (leitura mais rápida, cara mais "engenharia"); nav em aba
-  sublinhada no lugar da pílula; azul QuintoAndar como cor de assinatura; semânticos (verde/âmbar/vermelho) mantidos e dessaturados.
+  <b>O que mudou visualmente:</b> paleta mais contida com um único azul de assinatura; espaçamento e raios padronizados por escala;
+  ícones vetoriais no lugar de emojis; donut em SVG no lugar de gradiente; números e IDs em monoespaçada; abas fixas e semânticos
+  (verde/âmbar/vermelho) dessaturados. Layout responsivo abaixo de 720px.
   <br><b>O que NÃO muda:</b> nenhuma tela, fluxo, regra de negócio ou função — só a casca visual.
 </footer>
 
 <script>
-function mostrar(qual){
-  document.getElementById('v-fila').style.display = qual==='fila' ? '' : 'none';
-  document.getElementById('v-dash').style.display = qual==='dash' ? '' : 'none';
+function mostrar(qual, botao){
+  document.getElementById('v-fila').style.display  = qual==='fila'  ? '' : 'none';
+  document.getElementById('v-dash').style.display  = qual==='dash'  ? '' : 'none';
   document.getElementById('v-modal').style.display = qual==='modal' ? '' : 'none';
   document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
+  botao.classList.add('on');
 }
 </script>
 </body>
