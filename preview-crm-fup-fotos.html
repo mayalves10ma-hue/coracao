@@ -52,11 +52,21 @@
   .avatar{width:32px;height:32px;border-radius:9px;background:var(--navy-2);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:12px;color:#fff;border:1px solid #29406A}
 
   /* ── tabs ── */
+  /* abas em CSS puro (sem JS): radios escondidos controlam a view marcada */
+  .tabin{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
   nav.tabs{background:var(--surface);border-bottom:1px solid var(--line);padding:0 24px;display:flex;gap:26px;position:sticky;top:0;z-index:5}
-  nav.tabs button{appearance:none;border:0;background:none;cursor:pointer;font:600 13px var(--sans);color:var(--ink-3);
-    padding:15px 0 13px;border-bottom:2px solid transparent;letter-spacing:.005em;transition:color .15s}
-  nav.tabs button:hover{color:var(--ink-2)}
-  nav.tabs button.on{color:var(--ink);border-color:var(--brand)}
+  nav.tabs label{font:600 13px var(--sans);color:var(--ink-3);padding:15px 0 13px;border-bottom:2px solid transparent;letter-spacing:.005em;transition:color .15s;cursor:pointer;user-select:none}
+  nav.tabs label:hover{color:var(--ink-2)}
+  #v-fila,#v-dash,#v-modal{display:none}
+  #tab-fila:checked  ~ main #v-fila {display:block}
+  #tab-dash:checked  ~ main #v-dash {display:block}
+  #tab-modal:checked ~ main #v-modal{display:block}
+  #tab-fila:checked  ~ nav label[for=tab-fila] {color:var(--ink);border-color:var(--brand)}
+  #tab-dash:checked  ~ nav label[for=tab-dash] {color:var(--ink);border-color:var(--brand)}
+  #tab-modal:checked ~ nav label[for=tab-modal]{color:var(--ink);border-color:var(--brand)}
+  #tab-fila:focus-visible  ~ nav label[for=tab-fila],
+  #tab-dash:focus-visible  ~ nav label[for=tab-dash],
+  #tab-modal:focus-visible ~ nav label[for=tab-modal]{outline:2px solid var(--brand);outline-offset:3px;border-radius:3px}
 
   main{max-width:1060px;margin:0 auto;padding:24px 24px 72px}
 
@@ -189,7 +199,7 @@
 
 <header class="topbar">
   <div class="brand">
-    <div class="mark">FS</div>
+    <div class="mark">FUP</div>
     <div class="name">FUP Fotos <span>· Carteirização FSS</span></div>
   </div>
   <div class="userchip">
@@ -198,10 +208,14 @@
   </div>
 </header>
 
+<input class="tabin" type="radio" name="aba" id="tab-fila" checked>
+<input class="tabin" type="radio" name="aba" id="tab-dash">
+<input class="tabin" type="radio" name="aba" id="tab-modal">
+
 <nav class="tabs">
-  <button class="on" onclick="mostrar('fila',this)">Fila do analista</button>
-  <button onclick="mostrar('dash',this)">Dashboard operacional</button>
-  <button onclick="mostrar('modal',this)">Modal de tratativa</button>
+  <label for="tab-fila">Fila do analista</label>
+  <label for="tab-dash">Dashboard operacional</label>
+  <label for="tab-modal">Modal de tratativa</label>
 </nav>
 
 <main>
@@ -266,7 +280,7 @@
     </div>
   </div>
 
-  <div id="v-dash" style="display:none">
+  <div id="v-dash">
     <div class="ticket">
       <div class="cell"><div class="lbl"><span class="dot"></span>Ativos</div><div class="val num">312</div></div>
       <div class="cell"><div class="lbl warn"><span class="dot"></span>Pendentes</div><div class="val num warn">27</div><div class="delta down"><svg class="ic" style="transform:rotate(180deg)"><use href="#i-up"/></svg>4 vs. LW</div></div>
@@ -312,7 +326,7 @@
     </div>
   </div>
 
-  <div id="v-modal" class="modal-preview" style="display:none">
+  <div id="v-modal" class="modal-preview">
     <div class="modal-box">
       <h2>Rubens Carvalho Markus · 895444785</h2>
       <div class="sub">Imóvel 895444785 — Data do Mailing: 27/07/2026 · <b>ID PP 328215</b></div>
@@ -337,14 +351,5 @@
   <br><b>O que NÃO muda:</b> nenhuma tela, fluxo, regra de negócio ou função — só a casca visual.
 </footer>
 
-<script>
-function mostrar(qual, botao){
-  document.getElementById('v-fila').style.display  = qual==='fila'  ? '' : 'none';
-  document.getElementById('v-dash').style.display  = qual==='dash'  ? '' : 'none';
-  document.getElementById('v-modal').style.display = qual==='modal' ? '' : 'none';
-  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('on'));
-  botao.classList.add('on');
-}
-</script>
 </body>
 </html>
