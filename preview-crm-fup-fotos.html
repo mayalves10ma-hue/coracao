@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview · Redesign CRM FUP Fotos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1F38; --ink-2:#3D4A5C; --ink-3:#8792A3;
+    --paper:#F4F6F9; --surface:#FFFFFF; --line:#E1E6EC; --line-2:#CFD6DF;
+    --navy:#0E1F38;                       /* chrome escuro QuintoAndar */
+    --signal:#1E5BD6; --signal-dim:#E7EEFB; /* azul de assinatura */
+    --azul-claro:#4A90E2;
+    --ok:#1B7F4F; --alerta:#B7791F; --ruim:#C0332B;
+    --steel:#1E5BD6; --steel-dim:#E7EEFB;
+    --radius:9px; --radius-lg:12px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── nota de preview (não faz parte do CRM) ── */
+  .nota{background:var(--ink);color:#fff;font-size:12.5px;padding:10px 20px;text-align:center;letter-spacing:.01em}
+  .nota b{color:#7FB0F5}
+
+  /* ── header ── */
+  header.topbar{background:var(--ink);color:#fff;padding:14px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .mark{width:26px;height:26px;border-radius:6px;background:var(--signal);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:12px}
+  .brand .name{font-weight:700;font-size:15px;letter-spacing:-.01em}
+  .brand .name span{color:#7FB0F5;font-weight:600}
+  .userchip{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#AEBBCC}
+  .userchip b{color:#fff;font-weight:600}
+  .avatar{width:28px;height:28px;border-radius:6px;background:#1C3357;display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:11.5px;color:#fff;border:1px solid #2A4570}
+
+  /* ── tabs ── */
+  nav.tabs{background:var(--surface);border-bottom:1px solid var(--line);padding:0 26px;display:flex;gap:4px}
+  nav.tabs button{appearance:none;border:0;background:none;cursor:pointer;font:600 12.5px var(--sans);color:var(--ink-3);
+    padding:13px 4px;margin-right:22px;border-bottom:2px solid transparent;letter-spacing:.01em}
+  nav.tabs button.on{color:var(--ink);border-color:var(--signal)}
+  nav.tabs button .n{font-family:var(--mono);font-weight:600;font-size:11px;color:var(--ink-3);margin-left:5px}
+  nav.tabs button.on .n{color:var(--signal)}
+
+  main{max-width:1080px;margin:0 auto;padding:22px 26px 70px}
+
+  /* ── tira de indicadores: a assinatura do redesign ── */
+  .ticket{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);display:flex;overflow:hidden;margin-bottom:22px}
+  .ticket .cell{flex:1;padding:16px 18px;border-right:1px solid var(--line)}
+  .ticket .cell:last-child{border-right:0}
+  .ticket .lbl{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+  .ticket .val{font-family:var(--mono);font-weight:600;font-size:23px;letter-spacing:-.01em}
+  .ticket .val.alerta{color:var(--alerta)} .ticket .val.ok{color:var(--ok)} .ticket .val.ruim{color:var(--ruim)}
+  .ticket .delta{font-size:10.5px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)}
+
+  h2.secao{font-size:13px;font-weight:700;letter-spacing:.01em;margin:26px 0 12px;color:var(--ink-2)}
+
+  /* ── subpastas (réguas) ── */
+  .subpastas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .subpastas button{appearance:none;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);
+    font:600 11.5px var(--sans);padding:6px 12px;border-radius:999px;cursor:pointer}
+  .subpastas button.ativo{color:#fff;background:var(--signal);border-color:var(--signal)}
+  .subpastas .n{font-family:var(--mono);font-size:10.5px;opacity:.8;margin-left:5px}
+
+  /* ── lista de jobs ── */
+  .lista{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
+  .job{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line);position:relative;cursor:pointer;transition:background .1s}
+  .job:last-child{border-bottom:0}
+  .job:hover{background:#FBFAF8}
+  .job::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .job.b1::before{background:var(--steel)} .job.b2::before{background:var(--alerta)} .job.b3::before{background:var(--ruim)}
+  .job.bc::before{background:var(--ok)} .job.bs::before{background:#4A90E2}
+
+  .job .pp-col{flex:1.3;min-width:0}
+  .job .pp{font-weight:600;font-size:13.5px;letter-spacing:-.005em}
+  .job .ids{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:2px}
+  .job .meta{flex:2;display:flex;gap:6px;flex-wrap:wrap}
+  .chip{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:3px 8px;font-size:10.5px;color:var(--ink-2);white-space:nowrap}
+  .chip.regua{background:var(--steel-dim);border-color:transparent;color:var(--steel);font-weight:600}
+  .chip.tpl{font-family:var(--mono);background:#EEF2F8;color:#2C4A7C;border-color:transparent;font-size:10px}
+  .job .st{flex:0 0 auto;text-align:right}
+  .badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.02em;padding:4px 10px;border-radius:999px}
+  .badge.aviso{background:#FCEFDA;color:var(--alerta)}
+  .badge.ok{background:var(--signal-dim);color:var(--ok)}
+  .badge.ruim{background:#FBE6E4;color:var(--ruim)}
+  .badge.neutro{background:var(--paper);color:var(--ink-3);border:1px solid var(--line)}
+
+  /* ── dashboard ── */
+  .grade{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px 20px}
+  .card h3{font-size:13px;font-weight:700;margin-bottom:3px}
+  .card .dica{font-size:11.5px;color:var(--ink-3);margin-bottom:16px}
+
+  .donut{display:flex;align-items:center;gap:22px}
+  .donut .ring{width:132px;height:132px;border-radius:50%;position:relative;
+    background:conic-gradient(#1E5BD6 0 46%, var(--alerta) 46% 68%, var(--ruim) 68% 79%, var(--ok) 79% 92%, #4A90E2 92% 100%)}
+  .donut .ring::after{content:"";position:absolute;top:19px;right:19px;bottom:19px;left:19px;background:var(--surface);border-radius:50%;display:grid}
+  .donut .center{position:absolute;top:19px;right:19px;bottom:19px;left:19px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .donut .center b{font-family:var(--mono);font-size:20px}
+  .donut .center span{font-size:9px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+  .legenda{display:flex;flex-direction:column;gap:8px;font-size:12px}
+  .legenda div{display:flex;align-items:center;gap:8px}
+  .legenda i{width:9px;height:9px;border-radius:2px}
+  .legenda b{margin-left:auto;font-family:var(--mono)}
+
+  .barra-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:12px}
+  .barra-row .nome{flex:0 0 128px;font-weight:500}
+  .barra-row .trilho{flex:1;height:8px;background:var(--paper);border-radius:4px;overflow:hidden}
+  .barra-row .fill{height:100%;border-radius:4px}
+  .barra-row .pct{flex:0 0 auto;font-family:var(--mono);color:var(--ink-2);min-width:98px;text-align:right;font-size:11px}
+
+  /* ── modal preview ── */
+  .modal-preview{margin-top:26px}
+  .modal-box{max-width:520px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px 24px;box-shadow:0 20px 44px rgba(20,24,31,.10)}
+  .modal-box h2{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .modal-box .sub{color:var(--ink-2);font-weight:600;font-size:12.5px;margin:2px 0 14px}
+  .info-box{background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:11px 13px;font-size:12px;color:var(--ink-2);line-height:1.7;margin-bottom:14px}
+  .info-box b{color:var(--ink)}
+  .check-row{display:flex;gap:22px;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:11px 14px;margin-bottom:12px}
+  .check-item{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600}
+  .check-item .box{width:15px;height:15px;border:1.5px solid var(--line-2);border-radius:4px}
+  .check-item .box.on{background:var(--signal);border-color:var(--signal)}
+  .campo{margin-bottom:12px}
+  .campo label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
+  .campo .fake-select{border:1px solid var(--line-2);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--ink-3);background:var(--surface)}
+  .acoes{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+  .btn{border:0;border-radius:7px;padding:9px 16px;font:600 13px var(--sans);cursor:pointer}
+  .btn.claro{background:var(--surface);border:1px solid var(--line-2);color:var(--ink)}
+  .btn.escuro{background:var(--ink);color:#fff}
+
+  footer.notas{max-width:1080px;margin:0 auto;padding:0 26px 40px;color:var(--ink-3);font-size:11.5px;line-height:1.7}
+  footer.notas b{color:var(--ink-2)}
+</style>
+</head>
+<body>
+
+<div class="nota">Pré-visualização de redesign — mesmas telas e funções do CRM · <b>nada aqui está conectado à planilha</b></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">FS</div>
+    <div class="name">FUP Fotos <span>· Carteirização FSS</span></div>
+  </div>
+  <div class="userchip"><div class="avatar">DO</div><div><b>douglas.oliveira</b><br>Supervisor</div></div>
+</header>
+
+<nav class="tabs">
+  <button class="on" onclick="mostrar('fila')">Fila do analista</button>
+  <button onclick="mostrar('dash')">Dashboard Operacional</button>
+  <button onclick="mostrar('modal')">Modal de tratativa</button>
+</nav>
+
+<main>
+
+  <div id="v-fila">
+    <div class="ticket">
+      <div class="cell"><div class="lbl">Ativos na base</div><div class="val num">312</div></div>
+      <div class="cell"><div class="lbl">⏳ Pendentes hoje</div><div class="val num alerta">27</div></div>
+      <div class="cell"><div class="lbl">Tratados hoje</div><div class="val num ok">64</div></div>
+      <div class="cell"><div class="lbl">Confirmar agora</div><div class="val num ruim">5</div></div>
+    </div>
+
+    <h2 class="secao">Fase 1 · Janela</h2>
+    <div class="subpastas">
+      <button class="ativo">Pendentes <span class="n">12</span></button>
+      <button>Comunicação D0 <span class="n">31</span></button>
+      <button>Comunicação D2 <span class="n">19</span></button>
+      <button>Comunicação D5 <span class="n">14</span></button>
+    </div>
+
+    <div class="lista">
+      <div class="job b1">
+        <div class="pp-col"><div class="pp">Rubens Carvalho Markus</div><div class="ids">#895444785 · PP 328215 · 27/07/2026</div></div>
+        <div class="meta">
+          <span class="chip regua">Ligação + Chat</span>
+          <span class="chip tpl">fupfotos_d2_fss1</span>
+          <span class="chip">☎ 1 · 💬 0</span>
+        </div>
+        <div class="st"><span class="badge aviso">📢 Comunicação D2 · HOJE</span></div>
+      </div>
+      <div class="job b1">
+        <div class="pp-col"><div class="pp">Caio Ribeiro de Mello</div><div class="ids">#893746003 · PP 234300 · 27/07/2026</div></div>
+        <div class="meta">
+          <span class="chip">Sem contato / Caixa postal</span>
+          <span class="chip">☎ 2 · 💬 1</span>
+        </div>
+        <div class="st"><span class="badge ok">✅ D2 tratado</span></div>
+      </div>
+      <div class="job b3">
+        <div class="pp-col"><div class="pp">Marina Torres Aquino</div><div class="ids">#895609896 · PP 100542 · 12/07/2026</div></div>
+        <div class="meta">
+          <span class="chip regua">Chat encerramento</span>
+          <span class="chip tpl">fupfotos_d21_fss1</span>
+        </div>
+        <div class="st"><span class="badge aviso">📢 Comunicação D21 · HOJE</span></div>
+      </div>
+      <div class="job bc">
+        <div class="pp-col"><div class="pp">Igor Salles Prado</div><div class="ids">#895610441 · PP 552310 · 22/07/2026</div></div>
+        <div class="meta">
+          <span class="chip regua">Confirmar dados da sessão</span>
+          <span class="chip tpl">confirmação_fss1</span>
+        </div>
+        <div class="st"><span class="badge ruim">📞 Confirmar — job amanhã</span></div>
+      </div>
+      <div class="job bs">
+        <div class="pp-col"><div class="pp">Helena Duarte Vidal</div><div class="ids">#895611538 · PP 771902 · 19/07/2026</div></div>
+        <div class="meta">
+          <span class="chip">PP Indeciso</span>
+        </div>
+        <div class="st"><span class="badge ruim">🚨 Retorno hoje</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-dash" style="display:none">
+    <div class="ticket">
+      <div class="cell"><div class="lbl">Ativos</div><div class="val num">312</div></div>
+      <div class="cell"><div class="lbl">⏳ Pendentes</div><div class="val num alerta">27</div><div class="delta">▲ 4 vs. LW</div></div>
+      <div class="cell"><div class="lbl">Conversão</div><div class="val num ok">18%</div><div class="delta">▲ 2 p.p. vs. LW</div></div>
+      <div class="cell"><div class="lbl">Em confirmação</div><div class="val num">41</div></div>
+      <div class="cell"><div class="lbl">🚨 Agir agora</div><div class="val num ruim">9</div></div>
+    </div>
+
+    <div class="grade">
+      <div class="card">
+        <h3>Distribuição da carteira</h3>
+        <div class="dica">Onde estão os imóveis ativos agora.</div>
+        <div class="donut">
+          <div class="ring"><div class="center"><b>312</b><span>ativos</span></div></div>
+          <div class="legenda">
+            <div><i style="background:#1E5BD6"></i>Fase 1 · Janela<b>144</b></div>
+            <div><i style="background:var(--alerta)"></i>Fase 2 · Manutenção<b>68</b></div>
+            <div><i style="background:var(--ruim)"></i>Fase 3 · Resgate<b>34</b></div>
+            <div><i style="background:var(--ok)"></i>Confirmação<b>41</b></div>
+            <div><i style="background:#4A90E2"></i>Snoozed<b>25</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Coerência com a régua</h3>
+        <div class="dica">% em dia com o toque exigido hoje.</div>
+        <div class="barra-row"><span class="nome">yuri.adriel</span><span class="trilho"><span class="fill" style="width:91%;background:var(--ok)"></span></span><span class="pct">91% · 48/53</span></div>
+        <div class="barra-row"><span class="nome">nyckolas.gabryel</span><span class="trilho"><span class="fill" style="width:78%;background:var(--alerta)"></span></span><span class="pct">78% · 46/59</span></div>
+        <div class="barra-row"><span class="nome">silva5.kauane</span><span class="trilho"><span class="fill" style="width:62%;background:var(--alerta)"></span></span><span class="pct">62% · 39/63</span></div>
+        <div class="barra-row"><span class="nome">dias.isabeli</span><span class="trilho"><span class="fill" style="width:54%;background:var(--ruim)"></span></span><span class="pct">54% · 34/63</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-modal" class="modal-preview" style="display:none">
+    <div class="modal-box">
+      <h2>Rubens Carvalho Markus · 895444785</h2>
+      <div class="sub">Imóvel 895444785 — Data do Mailing: 27/07/2026 · <b>ID PP 328215</b></div>
+      <div class="info-box"><b>Régua:</b> Fase 1 · Janela · D2 — Ligação + Chat · template: <b>fupfotos_d2_fss1</b><br><b>Toques:</b> F1 0 Chat / 1 Call · F2 0 Chat / 0 Call</div>
+      <div class="check-row">
+        <div class="check-item"><span class="box on"></span>Call feita</div>
+        <div class="check-item"><span class="box"></span>Wpp enviado</div>
+      </div>
+      <div class="campo"><label>Tabulação</label><div class="fake-select">Sem contato</div></div>
+      <div class="campo"><label>Sub Tabulação</label><div class="fake-select">Não atendeu</div></div>
+      <div class="campo"><label>Observações</label><div class="fake-select" style="color:var(--ink-3)">Detalhes do contato…</div></div>
+      <div class="acoes"><button class="btn claro">Cancelar</button><button class="btn escuro">Salvar tratativa</button></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="notas">
+  <b>O que mudou visualmente:</b> azul-marinho QuintoAndar no header no lugar do azul claro chapado; bordas finas em vez de sombra flutuante;
+  cantos menos arredondados; números e IDs em monoespaçada (leitura mais rápida, cara mais "engenharia"); nav em aba
+  sublinhada no lugar da pílula; azul QuintoAndar como cor de assinatura; semânticos (verde/âmbar/vermelho) mantidos e dessaturados.
+  <br><b>O que NÃO muda:</b> nenhuma tela, fluxo, regra de negócio ou função — só a casca visual.
+</footer>
+
+<script>
+function mostrar(qual){
+  document.getElementById('v-fila').style.display = qual==='fila' ? '' : 'none';
+  document.getElementById('v-dash').style.display = qual==='dash' ? '' : 'none';
+  document.getElementById('v-modal').style.display = qual==='modal' ? '' : 'none';
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('on'));
+  event.target.classList.add('on');
+}
+</script>
+</body>
+</html>
