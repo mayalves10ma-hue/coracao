@@ -1367,6 +1367,70 @@ $('btnExportTrat').addEventListener('click', ()=>{
   baixarCSV('Tratativas_FUP_'+new Date().toISOString().slice(0,10)+'.csv', csv);
 });
 
+/* ═══════════ CONTACTABILIDADE · "Sem contato real" vs. cadência incompleta ═══════════ */
+const WPP_INICIO_ISO='2026-07-06';   // WhatsApp só passou a ser registrado a partir daqui
+const numCampo = v => { const n=parseFloat(String(v==null?'':v).replace(',','.')); return isNaN(n)?0:n; };
+const callsTotal = j => numCampo(j.f1Calls)+numCampo(j.f2Calls)+numCampo(j.f3Calls);
+const wppsTotal  = j => numCampo(j.f1Wpps)+numCampo(j.f2Wpps)+numCampo(j.f3Wpps);
+const r1 = x => (Math.round(x*10)/10).toFixed(1);   // percentual com 1 casa
+/* elegível: mailing a partir do início do WhatsApp — antes disso o wpps não é confiável */
+const elegivelWpp = j => { const iso=j.dataMailingISO||''; return !!iso && iso>=WPP_INICIO_ISO; };
+function classeContato(j){
+  if(String(j.tabulacao||'').trim()!=='Sem contato') return 'com_desfecho';
+  const c=callsTotal(j), w=wppsTotal(j);
+  if(c>0 && w>0) return 'sem_contato_real';   // tentado nos dois canais
+  if(c>0 || w>0) return 'nao_esgotado';       // cadência incompleta
+  return 'nao_tocado';                        // nenhuma tentativa
+}
+function metricasContato(leads){
+  const elig=leads.filter(elegivelWpp);
+  let real=0,naoEsg=0,naoToc=0,desfecho=0;
+  elig.forEach(j=>{ const cl=classeContato(j);
+    if(cl==='sem_contato_real')real++; else if(cl==='nao_esgotado')naoEsg++;
+    else if(cl==='nao_tocado')naoToc++; else desfecho++; });
+  const tot=elig.length, filaSC=real+naoEsg+naoToc;
+  return { tot, real, naoEsg, naoToc, desfecho, excluidos:leads.length-tot,
+    pctReal: tot?real/tot*100:0, pctNaoEsg: tot?naoEsg/tot*100:0,
+    pctNaoToc: tot?naoToc/tot*100:0, esgotamento: filaSC?real/filaSC*100:0 };
+}
+/* semana seg→dom ancorada no data_mailing; WTD = só os dias já decorridos vs. mesmos dias da semana anterior */
+function inicioSemana(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x; }
+function leadsNoIntervalo(leads,ini,fim){ return leads.filter(j=>{ const m=parseISO(j.dataMailingISO); return m && m>=ini && m<=fim; }); }
+function metaWTD(leads){
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const ini=inicioSemana(hoje);
+  const iniAnt=new Date(ini); iniAnt.setDate(iniAnt.getDate()-7);
+  const fimAnt=new Date(hoje); fimAnt.setDate(fimAnt.getDate()-7);
+  return { atual:metricasContato(leadsNoIntervalo(leads,ini,hoje)),
+           ant:metricasContato(leadsNoIntervalo(leads,iniAnt,fimAnt)) };
+}
+function htmlContactabilidade(){
+  const m=metricasContato(JOBS);
+  const w=metaWTD(JOBS);
+  /* "Sem contato (reportado)" = cálculo antigo (só tabulação), mantido para comparar na transição */
+  const rep = JOBS.length ? JOBS.filter(j=>String(j.tabulacao||'').trim()==='Sem contato').length/JOBS.length*100 : 0;
+  let deltaHTML='<span class="delta-lw flat">— vs. LW (WTD)</span>';
+  if(w.ant.tot>0){
+    const d=w.atual.pctReal-w.ant.pctReal;             // sem contato: cair é bom
+    const cls=Math.abs(d)<0.05?'flat':(d<0?'up':'down');
+    const seta=Math.abs(d)<0.05?'▬':(d<0?'▼':'▲');
+    deltaHTML='<span class="delta-lw '+cls+'">'+seta+' '+r1(Math.abs(d))+' p.p. vs. LW (WTD)</span>';
+  }
+  return `
+    <div class="card-graf largo">
+      <h3>Contactabilidade · a meta é "Sem contato real"</h3>
+      <p class="dica">Sem contato real = já tentado por telefone <b>e</b> WhatsApp. "Não esgotado" e "Não tocado" são execução de cadência, reportados à parte — não entram na meta. Base: leads a partir de 06/07/2026 (início do WhatsApp)${m.excluidos?` · ${m.excluidos} anterior(es) excluído(s)`:''}.</p>
+      <div class="sup-cards" style="margin-bottom:6px">
+        <div class="sup-card"><div class="v" style="color:var(--ruim)">${r1(m.pctReal)}%</div><div class="l">${ic('siren')} Sem contato real</div><div style="margin-top:6px">${deltaHTML}</div></div>
+        <div class="sup-card"><div class="v" style="color:var(--alerta)">${r1(m.pctNaoEsg)}%</div><div class="l">Não esgotado</div></div>
+        <div class="sup-card"><div class="v" style="color:var(--ink-3)">${r1(m.pctNaoToc)}%</div><div class="l">Não tocado</div></div>
+        <div class="sup-card"><div class="v" style="color:var(--ok)">${r1(m.esgotamento)}%</div><div class="l">Taxa de esgotamento</div></div>
+        <div class="sup-card"><div class="v" style="color:var(--ink-3)">${r1(rep)}%</div><div class="l">Sem contato (reportado)</div></div>
+      </div>
+      <p class="dica" style="margin-top:2px">${m.tot} lead(s) elegíveis · real ${m.real} · não esgotado ${m.naoEsg} · não tocado ${m.naoToc}. "Reportado" é o cálculo antigo (só tabulação = Sem contato) sobre ${JOBS.length} lead(s).</p>
+    </div>`;
+}
+
 /* ═══════════ DASHBOARD (supervisor) ═══════════ */
 function desenharDashboard(){
   const filas={fase1:0,fase2:0,fase3:0,confirmacao:0,snoozed:0,historico:0};
@@ -1475,7 +1539,7 @@ function desenharDashboard(){
       ${chartBarras(carteira, CORES.azul)}
     </div>`;
 
-  $('grafs').innerHTML=`
+  $('grafs').innerHTML=htmlContactabilidade()+`
     <div class="card-graf largo">
       <h3>Tratativas registradas por dia · 14 dias</h3>
       <p class="dica">Cada barra soma as tratativas gravadas por toda a equipe naquele dia.</p>
