@@ -267,6 +267,23 @@
   .btn-azul:hover{box-shadow:0 8px 18px -7px rgba(37,99,235,.6)}
   .btn-ico:hover{transform:translateY(-1px)}
 
+  /* ── seções de canal no modal (call / wpp) ── */
+  .canal-sec{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px;background:var(--bg-2);transition:opacity .15s}
+  .canal-sec.trava{opacity:.5}
+  .canal-sec.feita{border-color:rgba(11,122,82,.4);background:rgba(11,122,82,.05)}
+  .canal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .canal-nome{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+  .canal-nome .ic{width:16px;height:16px;color:var(--azul)}
+  .canal-tag{font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px;display:inline-flex;align-items:center;gap:5px}
+  .canal-tag.ok{background:rgba(11,122,82,.14);color:var(--ok)}
+  .canal-tag.lock{background:rgba(14,26,43,.06);color:var(--ink-3)}
+  .canal-body.trava{pointer-events:none;opacity:.6}
+  .canal-body .campo{margin-bottom:12px}
+  .mini-canal{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--ink-2)}
+  .mini-canal .ic{width:13px;height:13px}
+  .mini-canal.ok{background:rgba(11,122,82,.12);color:var(--ok);border-color:transparent}
+  .mini-canal.pend{background:rgba(178,106,0,.14);color:var(--alerta);border-color:transparent}
+
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -489,51 +506,68 @@
     <div class="info-job" id="mInfo"></div>
     <div id="mHist" class="hist-box oculto"></div>
 
-    <div class="check-group">
-      <label class="check-item"><input type="checkbox" id="chkCall"> Call feita</label>
-      <label class="check-item"><input type="checkbox" id="chkWpp"> Wpp enviado</label>
+    <!-- toques exigidos hoje pela régua -->
+    <div id="mCanaisDia" class="oculto" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+
+    <!-- SEÇÃO LIGAÇÃO (call) -->
+    <div id="secCall" class="canal-sec oculto">
+      <div class="canal-head">
+        <span class="canal-nome"><svg class="ic"><use href="#i-phone"/></svg> Ligação</span>
+        <span id="callTag" class="canal-tag ok oculto"><svg class="ic"><use href="#i-check"/></svg> registrada</span>
+      </div>
+      <div id="callBody" class="canal-body">
+        <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:8px">Tentativas de contato nesta ligação</label>
+        <div class="check-group" style="background:var(--bg-2);border-style:dashed;margin-bottom:12px">
+          <label class="check-item"><input type="radio" name="optTent" value="1" checked> 1</label>
+          <label class="check-item"><input type="radio" name="optTent" value="2"> 2</label>
+          <label class="check-item"><input type="radio" name="optTent" value="3"> 3</label>
+          <label class="check-item"><input type="radio" name="optTent" value="4"> 4 ou mais</label>
+          <input type="number" id="mTentQtd" min="4" max="30" value="4" class="oculto"
+            style="width:88px;border:1px solid var(--line-2);border-radius:10px;padding:7px 10px;font:600 13px 'Inter',sans-serif;color:var(--ink)">
+        </div>
+        <div class="campo"><label>Resultado da ligação</label><select id="callTab"><option value="">Selecione…</option></select></div>
+        <div class="campo"><label>Sub tabulação</label><select id="callSub"><option value="">Selecione primeiro a tabulação…</option></select></div>
+        <div id="callSnoozeWrap" class="campo oculto"><label>Data do Snooze (retorno obrigatório)</label><input type="date" id="callSnooze"></div>
+        <div style="display:flex;justify-content:flex-end"><button class="btn btn-azul" id="btnSalvarCall" style="width:auto">Salvar ligação</button></div>
+      </div>
     </div>
 
-    <div id="blocoTentativas" class="bloco-prog oculto" style="margin-bottom:16px">
-      <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:8px">Tentativas de contato nesta ligação</label>
-      <div class="check-group" style="background:var(--bg-2);border-style:dashed">
-        <label class="check-item"><input type="radio" name="optTent" value="1" checked> 1</label>
-        <label class="check-item"><input type="radio" name="optTent" value="2"> 2</label>
-        <label class="check-item"><input type="radio" name="optTent" value="3"> 3</label>
-        <label class="check-item"><input type="radio" name="optTent" value="4"> 4 ou mais</label>
-        <input type="number" id="mTentQtd" min="4" max="30" value="4" class="oculto"
-          style="width:88px;border:1px solid var(--line-2);border-radius:10px;padding:7px 10px;font:600 13px 'Inter',sans-serif;color:var(--ink)">
+    <!-- SEÇÃO WHATSAPP (wpp) -->
+    <div id="secWpp" class="canal-sec oculto">
+      <div class="canal-head">
+        <span class="canal-nome"><svg class="ic"><use href="#i-chat"/></svg> WhatsApp</span>
+        <span id="wppLockTag" class="canal-tag lock oculto"><svg class="ic"><use href="#i-lock"/></svg> salve a ligação primeiro</span>
+        <span id="wppTag" class="canal-tag ok oculto"><svg class="ic"><use href="#i-check"/></svg> registrado</span>
       </div>
-      <p style="font-size:11.5px;color:var(--ink-3);margin-top:6px">O número escolhido é somado ao contador de calls da fase.</p>
-    </div>
-
-    <div id="blocoWpp" class="bloco-prog oculto" style="margin-bottom:16px">
-      <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:8px">Status do WhatsApp</label>
-      <div class="check-group" style="background:var(--bg-2);border-style:dashed">
-        <label class="check-item"><input type="radio" name="optWpp" id="radAguardando"> Aguardando resposta do PP</label>
-        <label class="check-item"><input type="radio" name="optWpp" id="radRetorno"> Retorno do PP via chat</label>
+      <div id="wppBody" class="canal-body">
+        <div class="campo"><label>Resultado do WhatsApp</label><select id="wppTab"><option value="">Selecione…</option></select></div>
+        <div class="campo"><label>Sub tabulação</label><select id="wppSub"><option value="">Selecione primeiro a tabulação…</option></select></div>
+        <div id="wppSnoozeWrap" class="campo oculto"><label>Data do Snooze (retorno obrigatório)</label><input type="date" id="wppSnooze"></div>
+        <div style="display:flex;justify-content:flex-end"><button class="btn btn-azul" id="btnSalvarWpp" style="width:auto">Salvar WhatsApp</button></div>
       </div>
     </div>
 
-    <div id="blocoTab" class="bloco-prog oculto">
-      <div class="campo"><label>Tabulação</label><select id="mTab"><option value="">Selecione…</option></select></div>
-      <div class="campo"><label>Sub Tabulação</label><select id="mSubTab"><option value="">Selecione primeiro a tabulação…</option></select></div>
-      <div id="blocoSnooze" class="bloco-prog oculto">
-        <div class="campo"><label>Data do Snooze (retorno obrigatório)</label><input type="date" id="mSnoozeDate"></div>
+    <!-- SEÇÃO ÚNICA (confirmação / snoozed / dias sem comunicação) -->
+    <div id="secUnica" class="canal-sec oculto">
+      <div class="canal-body">
+        <div class="campo"><label>Tabulação</label><select id="uTab"><option value="">Selecione…</option></select></div>
+        <div class="campo"><label>Sub Tabulação</label><select id="uSub"><option value="">Selecione primeiro a tabulação…</option></select></div>
+        <div id="uSnoozeWrap" class="campo oculto"><label>Data do Snooze (retorno obrigatório)</label><input type="date" id="uSnooze"></div>
+        <div style="display:flex;justify-content:flex-end"><button class="btn btn-azul" id="btnSalvarUnica" style="width:auto">Salvar tratativa</button></div>
       </div>
-      <div id="avisoSucesso" class="bloco-prog oculto" style="margin:-4px 0 16px;padding:12px 14px;border-radius:12px;
-        background:rgba(11,122,82,.1);border:1px solid rgba(11,122,82,.28);font-size:13px;color:var(--ink);line-height:1.6">
-        <svg class="ic"><use href="#i-send"/></svg> <b>Enviar confirmação de reagendamento</b><br>
-        template: <b style="font-family:ui-monospace,Menlo,monospace;color:var(--ok)">dadossessao_fss1</b>
-      </div>
+    </div>
+
+    <div id="avisoSucesso" class="bloco-prog oculto" style="margin:0 0 14px;padding:12px 14px;border-radius:12px;
+      background:rgba(11,122,82,.1);border:1px solid rgba(11,122,82,.28);font-size:13px;color:var(--ink);line-height:1.6">
+      <svg class="ic"><use href="#i-send"/></svg> <b>Enviar confirmação de reagendamento</b><br>
+      template: <b style="font-family:ui-monospace,Menlo,monospace;color:var(--ok)">dadossessao_fss1</b>
     </div>
 
     <div class="campo" style="margin-top:8px"><label>Observações</label>
-      <textarea id="mObs" rows="3" placeholder="Detalhes do contato…"></textarea></div>
+      <textarea id="mObs" rows="2" placeholder="Detalhes do contato…"></textarea></div>
 
     <div class="acoes">
-      <button class="btn btn-claro" id="btnCancelar">Cancelar</button>
-      <button class="btn btn-azul" id="btnSalvar" style="width:auto">Salvar tratativa</button>
+      <button class="btn btn-claro" id="btnFechar">Fechar</button>
     </div>
   </div>
 </div>
@@ -585,21 +619,29 @@ function normTab(v){
 /* sub tabulações que sempre significam descarte, mesmo se a coluna tabulacao vier vazia/errada */
 const SUBS_DESCARTE = new Set(TABMAP["Descarte"].map(normTab));
 
-Object.keys(TABMAP).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=t; $('mTab').appendChild(o); });
-$('mTab').addEventListener('change', function(){
-  const sub=$('mSubTab'); sub.innerHTML='<option value="">Selecione…</option>';
-  (TABMAP[this.value]||[]).forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; sub.appendChild(o); });
-  if(!TABMAP[this.value]) sub.innerHTML='<option value="">Selecione primeiro a tabulação…</option>';
-  $('blocoSnooze').classList.toggle('oculto', this.value!=='Snoozed');
-  if(this.value!=='Snoozed') $('mSnoozeDate').value='';
-  avisoDeSucesso();
-});
-/* Tabulou sucesso em qualquer fase → lembrete do template de confirmação */
+/* popula um par (tabulação → sub tabulação) a partir do TABMAP */
+function popTab(sel){
+  sel.innerHTML='<option value="">Selecione…</option>';
+  Object.keys(TABMAP).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=t; sel.appendChild(o); });
+}
+function ligaTabSub(selTab, selSub, snoozeWrap){
+  selTab.addEventListener('change', function(){
+    selSub.innerHTML='<option value="">Selecione…</option>';
+    (TABMAP[this.value]||[]).forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; selSub.appendChild(o); });
+    if(!TABMAP[this.value]) selSub.innerHTML='<option value="">Selecione primeiro a tabulação…</option>';
+    if(snoozeWrap){ snoozeWrap.classList.toggle('oculto', this.value!=='Snoozed');
+      if(this.value!=='Snoozed'){ const inp=snoozeWrap.querySelector('input'); if(inp) inp.value=''; } }
+    avisoDeSucesso();
+  });
+}
+popTab($('callTab')); popTab($('wppTab')); popTab($('uTab'));
+ligaTabSub($('callTab'), $('callSub'), $('callSnoozeWrap'));
+ligaTabSub($('wppTab'),  $('wppSub'),  $('wppSnoozeWrap'));
+ligaTabSub($('uTab'),    $('uSub'),    $('uSnoozeWrap'));
+/* Tabulou sucesso em qualquer canal → lembrete do template de confirmação */
 function avisoDeSucesso(){
-  const t=($('mTab').value||'').toLowerCase();
-  const ehSucesso = t.indexOf('sucesso')>-1 || t.indexOf('agendado')>-1;
-  /* lembrete vale para quem está numa fase da régua; na aba de Confirmação
-     o template completo já aparece no cabeçalho do modal */
+  const vals=[$('callTab'),$('wppTab'),$('uTab')].map(s=>((s&&s.value)||'').toLowerCase());
+  const ehSucesso = vals.some(v=>v.indexOf('sucesso')>-1 || v.indexOf('agendado')>-1);
   const naConfirmacao = JOB_ABERTO && definirFila(JOB_ABERTO)==='confirmacao';
   $('avisoSucesso').classList.toggle('oculto', !(ehSucesso && !naConfirmacao));
 }
@@ -1863,11 +1905,10 @@ let MODAL_LEITURA=false;
 function abrirModalLeitura(id){
   MODAL_LEITURA=true;
   abrirModal(id);
-  // esconder tudo que grava
-  ['blocoTentativas','blocoWpp','blocoTab','avisoSucesso'].forEach(i=>{ if($(i)) $(i).classList.add('oculto'); });
-  document.querySelectorAll('#fundoModal .check-group').forEach(el=>el.style.display='none');
+  // trava todos os canais e esconde os botões de salvar
+  document.querySelectorAll('#fundoModal .canal-body').forEach(el=>el.classList.add('trava'));
+  ['btnSalvarCall','btnSalvarWpp','btnSalvarUnica'].forEach(i=>{ if($(i)) $(i).classList.add('oculto'); });
   const obs=$('mObs'); if(obs){ obs.disabled=true; obs.placeholder='Somente leitura'; }
-  if($('btnSalvar')) $('btnSalvar').classList.add('oculto');
 }
 
 /* ═══════════ EQUIPE (supervisor) ═══════════ */
@@ -2029,7 +2070,65 @@ $('btnExportEquipe').addEventListener('click', ()=>{
   baixarCSV('Equipe_FUP_'+new Date().toISOString().slice(0,10)+'.csv', csv);
 });
 
-/* ═══════════ MODAL ═══════════ */
+/* ═══════════ MODAL (dois canais: Ligação + WhatsApp) ═══════════ */
+let MODAL_CX = {call:false, wpp:false, r:null};
+let MODAL_ETAPA = {callFeita:false, wppFeito:false};
+
+/* canais exigidos hoje pela régua (só em dias de comunicação de uma fase) */
+function canaisExigidos(j){
+  const r=calcularRegua(j.dataMailingISO);
+  if(!r || !r.tpl) return {call:false, wpp:false, r:r};
+  const acao=(r.acao||'').toLowerCase();
+  return {call:acao.indexOf('liga')>-1, wpp:acao.indexOf('chat')>-1, r:r};
+}
+/* já houve toque desse canal hoje? (olha o log de toques e o histórico) */
+function toqueHojeCanal(j, canal){
+  const hoje=hojeISO();
+  const linhas=(String(j.logToques||'')+'\n'+String(j.historicoFases||'')).split('\n');
+  return linhas.some(l=>{
+    if(!l.trim()) return false;
+    let iso='';
+    let m=l.match(/^\[(\d{2})\/(\d{2})\/(\d{4})/); if(m) iso=m[3]+'-'+m[2]+'-'+m[1];
+    else { m=l.match(/(\d{4})-(\d{2})-(\d{2})/); if(m) iso=m[0]; }
+    if(iso!==hoje) return false;
+    const low=l.toLowerCase();
+    return canal==='call' ? (low.indexOf('[call]')>-1 || /\bcall/.test(low))
+                          : (low.indexOf('[wpp]')>-1 || low.indexOf('wpp')>-1);
+  });
+}
+
+function atualizaSecoes(){
+  const cx=MODAL_CX, e=MODAL_ETAPA;
+  // Ligação feita → trava o corpo e mostra selo
+  $('secCall').classList.toggle('feita', cx.call && e.callFeita);
+  $('callTag').classList.toggle('oculto', !(cx.call && e.callFeita));
+  $('callBody').classList.toggle('trava', cx.call && e.callFeita);
+  // WhatsApp: trava até a ligação sair (quando os dois são exigidos)
+  const travaWpp = cx.call && cx.wpp && !e.callFeita;
+  $('secWpp').classList.toggle('trava', travaWpp);
+  $('secWpp').classList.toggle('feita', cx.wpp && e.wppFeito);
+  $('wppTag').classList.toggle('oculto', !(cx.wpp && e.wppFeito));
+  $('wppLockTag').classList.toggle('oculto', !travaWpp);
+  $('wppBody').classList.toggle('trava', travaWpp || (cx.wpp && e.wppFeito));
+  // barra de canais do dia
+  const chip=(nome,ico,feito)=> '<span class="mini-canal '+(feito?'ok':'pend')+'">'+ic(ico)+' '+nome+' '+(feito?'✓':'pendente')+'</span>';
+  $('mCanaisDia').innerHTML =
+    (cx.call?chip('Ligação','phone',e.callFeita):'') +
+    (cx.wpp?chip('WhatsApp','chat',e.wppFeito):'');
+}
+
+function tentativasEscolhidas(){
+  const r=document.querySelector('input[name="optTent"]:checked');
+  if(!r) return 1;
+  if(r.value==='4'){ const n=Number($('mTentQtd').value)||4; return Math.min(30, Math.max(4, n)); }
+  return Number(r.value)||1;
+}
+document.querySelectorAll('input[name="optTent"]').forEach(r=>r.addEventListener('change',()=>{
+  const livre = document.querySelector('input[name="optTent"]:checked').value==='4';
+  $('mTentQtd').classList.toggle('oculto', !livre);
+  if(livre) $('mTentQtd').focus();
+}));
+
 function abrirModal(id){
   JOB_ABERTO=JOBS.find(j=>j.idImovel===id); if(!JOB_ABERTO) return;
   const j=JOB_ABERTO;
@@ -2050,10 +2149,11 @@ function abrirModal(id){
     (r?`<b>Régua:</b> ${r.fase.nome} · D${r.dia}${r.acao?' — '+r.acao:''}${r.tpl?' · template: <b style="font-family:ui-monospace,Menlo,monospace">'+r.tpl+'</b>':''}<br>`:'')+
     `<b>Toques:</b> F1 ${j.f1Wpps} Chat / ${j.f1Calls} Call · F2 ${j.f2Wpps} Chat / ${j.f2Calls} Call · F3 ${j.f3Wpps} Chat / ${j.f3Calls} Call
     ${j.dataJob?'<br><b>Data do job:</b> '+j.dataJob.split('-').reverse().join('/'):''}
+    ${j.resultadoCall?'<br><b>Último desfecho da call:</b> '+esc(j.resultadoCall):''}
+    ${j.resultadoWpp?'<br><b>Último desfecho do wpp:</b> '+esc(j.resultadoWpp):''}
     ${j.obs?'<br><b>Obs. anteriores:</b> '+esc(j.obs):''}
     ${j.magiclink?'<br><a href="'+esc(j.magiclink)+'" target="_blank" rel="noopener">Abrir magiclink ↗</a>':''}`;
 
-  $('chkCall').checked=false; $('chkWpp').checked=false;
   const linhasHist=String(j.historicoFases||'').split('\n').map(x=>x.trim()).filter(Boolean);
   if(linhasHist.length){
     $('mHist').classList.remove('oculto');
@@ -2065,86 +2165,104 @@ function abrirModal(id){
         return '<div class="hist-item'+imp+'"><span class="pt"></span>'+
                '<span class="qd">'+esc(meta)+'</span><span class="tx">'+esc(txt||'—')+'</span></div>';
       }).reverse().join('')+'</div>';
-  } else {
-    $('mHist').classList.add('oculto'); $('mHist').innerHTML='';
-  }
+  } else { $('mHist').classList.add('oculto'); $('mHist').innerHTML=''; }
 
-  $('radAguardando').checked=false; $('radRetorno').checked=false;
-  document.querySelectorAll('input[name="optTent"]').forEach(r=>{ r.checked = (r.value==='1'); });
+  // reset dos campos dos 3 blocos
+  [$('callTab'),$('wppTab'),$('uTab')].forEach(s=>{ s.value=''; s.dispatchEvent(new Event('change')); });
+  $('callSnooze').value=''; $('wppSnooze').value=''; $('uSnooze').value=''; $('mObs').value='';
+  document.querySelectorAll('input[name="optTent"]').forEach(r=>{ r.checked=(r.value==='1'); });
   $('mTentQtd').value=4; $('mTentQtd').classList.add('oculto');
-  $('mTab').value=Object.keys(TABMAP).includes(j.tabulacao)?j.tabulacao:'';
-  $('mTab').dispatchEvent(new Event('change'));
-  $('mSubTab').value=j.subTab||'';
-  $('mSnoozeDate').value=j.dataSnooze||'';
-  $('mObs').value='';
-  estadoModal();
+
+  const modoCanais = filaJob.indexOf('fase')===0 && r && r.tpl;
+  MODAL_ETAPA={callFeita:false, wppFeito:false};
+  if(modoCanais){
+    MODAL_CX=canaisExigidos(j);
+    // canal já tratado hoje conta como feito (não força de novo)
+    if(MODAL_CX.call && toqueHojeCanal(j,'call')) MODAL_ETAPA.callFeita=true;
+    if(MODAL_CX.wpp && toqueHojeCanal(j,'wpp'))  MODAL_ETAPA.wppFeito=true;
+    $('secUnica').classList.add('oculto');
+    $('secCall').classList.toggle('oculto', !MODAL_CX.call);
+    $('secWpp').classList.toggle('oculto', !MODAL_CX.wpp);
+    $('mCanaisDia').classList.remove('oculto');
+    atualizaSecoes();
+  } else {
+    MODAL_CX={call:false, wpp:false, r:r};
+    $('mCanaisDia').classList.add('oculto');
+    $('secCall').classList.add('oculto'); $('secWpp').classList.add('oculto');
+    $('secUnica').classList.remove('oculto');
+    $('uTab').value=Object.keys(TABMAP).includes(j.tabulacao)?j.tabulacao:''; $('uTab').dispatchEvent(new Event('change'));
+    $('uSub').value=j.subTab||''; $('uSnooze').value=j.dataSnooze||'';
+  }
+  avisoDeSucesso();
   $('fundoModal').classList.remove('oculto');
 }
+
+/* salva o toque de um canal (call|wpp) — cada save é um toque no log */
+function salvarCanal(canal){
+  const j=JOB_ABERTO; if(!j) return;
+  const selTab=$(canal==='call'?'callTab':'wppTab');
+  const selSub=$(canal==='call'?'callSub':'wppSub');
+  const selSnz=$(canal==='call'?'callSnooze':'wppSnooze');
+  const btn=$(canal==='call'?'btnSalvarCall':'btnSalvarWpp');
+  const rotulo=canal==='call'?'Salvar ligação':'Salvar WhatsApp';
+  const tab=selTab.value, sub=selSub.value;
+  if(!tab||!sub){ toast('Preencha tabulação e sub tabulação.'); return; }
+  if(tab==='Snoozed' && !selSnz.value){ toast('Preencha a Data do Snooze.'); return; }
+  const t={ canal:canal, tabulacao:tab, subTab:sub, dataSnooze:selSnz.value, obs:$('mObs').value,
+    fase:faseAtual(j), callFeita:canal==='call', wppEnviado:canal==='wpp',
+    tentativas: canal==='call' ? tentativasEscolhidas() : 0 };
+  ocupado(btn, true, rotulo);
+  google.script.run
+    .withSuccessHandler(r=>{
+      ocupado(btn, false, rotulo);
+      if(!r.ok){ toast('Erro: '+r.erro); return; }
+      if(canal==='call') MODAL_ETAPA.callFeita=true; else MODAL_ETAPA.wppFeito=true;
+      atualizaSecoes();
+      /* só "Sem contato" segue para o outro canal; qualquer desfecho efetivo encerra o dia */
+      const terminou = tab!=='Sem contato';
+      const falta = !terminou && ((MODAL_CX.call && !MODAL_ETAPA.callFeita) || (MODAL_CX.wpp && !MODAL_ETAPA.wppFeito));
+      if(!falta){
+        toast(tab==='Descarte'?'Descartado — foi para o Histórico.':'Toques do dia registrados!');
+        $('fundoModal').classList.add('oculto'); carregarJobs();
+      } else {
+        toast(canal==='call'?'Ligação registrada — agora o WhatsApp.':'WhatsApp registrado.');
+      }
+    })
+    .withFailureHandler(e=>{ ocupado(btn,false,rotulo); tratarErro(e); })
+    .salvarTratativa(TOKEN, j.idImovel, t);
+}
+$('btnSalvarCall').addEventListener('click', ()=>salvarCanal('call'));
+$('btnSalvarWpp').addEventListener('click', ()=>salvarCanal('wpp'));
+
+/* seção única (confirmação / snoozed / dias sem comunicação) */
+$('btnSalvarUnica').addEventListener('click', ()=>{
+  const j=JOB_ABERTO; if(!j) return;
+  const tab=$('uTab').value, sub=$('uSub').value;
+  if(!tab||!sub){ toast('Preencha tabulação e sub tabulação.'); return; }
+  if(tab==='Snoozed' && !$('uSnooze').value){ toast('Preencha a Data do Snooze.'); return; }
+  const t={ tabulacao:tab, subTab:sub, dataSnooze:$('uSnooze').value, obs:$('mObs').value,
+    fase:faseAtual(j), callFeita:false, wppEnviado:false, tentativas:0 };
+  ocupado($('btnSalvarUnica'), true, 'Salvar tratativa');
+  google.script.run
+    .withSuccessHandler(r=>{
+      ocupado($('btnSalvarUnica'), false, 'Salvar tratativa');
+      if(!r.ok){ toast('Erro: '+r.erro); return; }
+      toast(tab==='Descarte'?'Descartado — foi para o Histórico.':'Tratativa salva!');
+      $('fundoModal').classList.add('oculto'); carregarJobs();
+    })
+    .withFailureHandler(e=>{ ocupado($('btnSalvarUnica'),false,'Salvar tratativa'); tratarErro(e); })
+    .salvarTratativa(TOKEN, j.idImovel, t);
+});
+
 function restaurarModalEscrita(){
   if(!MODAL_LEITURA) return;
   MODAL_LEITURA=false;
-  document.querySelectorAll('#fundoModal .check-group').forEach(el=>el.style.display='');
+  document.querySelectorAll('#fundoModal .canal-body').forEach(el=>el.classList.remove('trava'));
+  ['btnSalvarCall','btnSalvarWpp','btnSalvarUnica'].forEach(i=>{ if($(i)) $(i).classList.remove('oculto'); });
   const obs=$('mObs'); if(obs){ obs.disabled=false; obs.placeholder='Detalhes do contato…'; }
-  if($('btnSalvar')) $('btnSalvar').classList.remove('oculto');
 }
-$('btnCancelar').addEventListener('click', ()=>{ $('fundoModal').classList.add('oculto'); restaurarModalEscrita(); });
+$('btnFechar').addEventListener('click', ()=>{ $('fundoModal').classList.add('oculto'); restaurarModalEscrita(); });
 $('fundoModal').addEventListener('click', e=>{ if(e.target.id==='fundoModal'){ $('fundoModal').classList.add('oculto'); restaurarModalEscrita(); } });
-
-function tentativasEscolhidas(){
-  const r=document.querySelector('input[name="optTent"]:checked');
-  if(!r) return 1;
-  if(r.value==='4'){
-    const n=Number($('mTentQtd').value)||4;
-    return Math.min(30, Math.max(4, n));
-  }
-  return Number(r.value)||1;
-}
-function estadoModal(){
-  const call=$('chkCall').checked, wpp=$('chkWpp').checked;
-  $('blocoTentativas').classList.toggle('oculto', !call);
-  $('blocoWpp').classList.toggle('oculto', !(wpp&&!call));
-  if(!(wpp&&!call)){ $('radAguardando').checked=false; $('radRetorno').checked=false; }
-  $('blocoTab').classList.toggle('oculto', !(call||$('radRetorno').checked));
-  avisoDeSucesso();
-}
-['chkCall','chkWpp','radAguardando','radRetorno'].forEach(id=>$(id).addEventListener('change',estadoModal));
-document.querySelectorAll('input[name="optTent"]').forEach(r=>r.addEventListener('change',()=>{
-  const livre = document.querySelector('input[name="optTent"]:checked').value==='4';
-  $('mTentQtd').classList.toggle('oculto', !livre);
-  if(livre) $('mTentQtd').focus();
-}));
-
-$('btnSalvar').addEventListener('click', ()=>{
-  if(!JOB_ABERTO) return;
-  const call=$('chkCall').checked, wpp=$('chkWpp').checked;
-  if(!call&&!wpp){ toast('Marque pelo menos Call feita ou Wpp enviado.'); return; }
-  let tab=$('mTab').value, sub=$('mSubTab').value;
-  if(!call&&wpp){
-    if($('radAguardando').checked){ tab='Sem contato'; sub='Aguardando Resposta Wpp'; }
-    else if($('radRetorno').checked){ if(!tab||!sub){ toast('Preencha Tabulação e Sub Tabulação.'); return; } }
-    else { toast('Selecione o status do WhatsApp enviado.'); return; }
-  } else if(call){
-    if(!tab||!sub){ toast('Preencha Tabulação e Sub Tabulação.'); return; }
-  }
-  const dSnooze=$('mSnoozeDate').value;
-  if(tab==='Snoozed'&&!dSnooze){ toast('Preencha a Data do Snooze.'); return; }
-
-  const tentativas = call ? tentativasEscolhidas() : 0;
-  const t={ tabulacao:tab, subTab:sub, dataSnooze:dSnooze, obs:$('mObs').value,
-    fase:faseAtual(JOB_ABERTO), callFeita:call, wppEnviado:wpp, tentativas:tentativas };
-  ocupado($('btnSalvar'), true, 'Salvar tratativa');
-  google.script.run
-    .withSuccessHandler(r=>{
-      ocupado($('btnSalvar'),false,'Salvar tratativa');
-      if(r.ok){
-        toast(tab==='Descarte' ? 'Descartado — foi para o Histórico.' : 'Tratativa salva!');
-        $('fundoModal').classList.add('oculto'); carregarJobs();
-      }
-      else toast('Erro: '+r.erro);
-    })
-    .withFailureHandler(e=>{ ocupado($('btnSalvar'),false,'Salvar tratativa'); tratarErro(e); })
-    .salvarTratativa(TOKEN, JOB_ABERTO.idImovel, t);
-});
 </script>
 </body>
 </html>
