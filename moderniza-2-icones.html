@@ -1,0 +1,32 @@
+<!--
+  ════════════════════════════════════════════════════════════════
+  PEÇA 2 — ÍCONES
+  ════════════════════════════════════════════════════════════════
+  (A) Cole este bloco <svg> LOGO DEPOIS da tag <body> do seu arquivo.
+      É invisível: só define os desenhos usados por <use>.
+-->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-phone" viewBox="0 0 16 16"><path d="M14.7 11.3v2a1.33 1.33 0 0 1-1.45 1.33 12.9 12.9 0 0 1-5.62-2 12.7 12.7 0 0 1-3.9-3.9 12.9 12.9 0 0 1-2-5.65A1.33 1.33 0 0 1 3.06 1.65h2a1.33 1.33 0 0 1 1.33 1.15c.08.64.24 1.27.46 1.87a1.33 1.33 0 0 1-.3 1.4l-.85.85a10.67 10.67 0 0 0 3.9 3.9l.85-.85a1.33 1.33 0 0 1 1.4-.3c.6.22 1.23.38 1.87.46a1.33 1.33 0 0 1 1.15 1.35z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 16 16"><path d="M14 9.33a1.33 1.33 0 0 1-1.33 1.34H4.67L2 13.33V4a1.33 1.33 0 0 1 1.33-1.33h9.34A1.33 1.33 0 0 1 14 4z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 16 16"><path d="M12 5.33a4 4 0 1 0-8 0c0 4.67-2 6-2 6h12s-2-1.33-2-6"/><path d="M9.15 14a1.33 1.33 0 0 1-2.3 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="m13.5 4.5-7 7L3 8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 16 16"><path d="M6.86 2.57 1.21 12a1.33 1.33 0 0 0 1.14 2h11.3a1.33 1.33 0 0 0 1.14-2L9.14 2.57a1.33 1.33 0 0 0-2.28 0z"/><path d="M8 6v2.67M8 11.33h.01"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3"/><path d="M8 4.6V8l2.3 1.4"/></symbol>
+  <symbol id="i-siren" viewBox="0 0 16 16"><path d="M4 13v-4a4 4 0 0 1 8 0v4"/><path d="M2.7 13h10.6M8 2.3v1.4M13.3 4.7l-1 1M2.7 4.7l1 1"/></symbol>
+  <symbol id="i-user" viewBox="0 0 16 16"><path d="M13 14v-1.33A2.67 2.67 0 0 0 10.33 10H5.67A2.67 2.67 0 0 0 3 12.67V14"/><circle cx="8" cy="5" r="2.67"/></symbol>
+  <symbol id="i-link" viewBox="0 0 16 16"><path d="M6.67 8.67a2.67 2.67 0 0 0 4 .33l2-2a2.67 2.67 0 1 0-3.77-3.77l-1.14 1.14"/><path d="M9.33 7.33a2.67 2.67 0 0 0-4-.33l-2 2a2.67 2.67 0 1 0 3.77 3.77l1.14-1.14"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 16 16"><rect x="5.33" y="5.33" width="8.67" height="8.67" rx="1.33"/><path d="M2.67 10.67H2A1.33 1.33 0 0 1 .67 9.33V2A1.33 1.33 0 0 1 2 .67h7.33A1.33 1.33 0 0 1 10.67 2v.67"/></symbol>
+  <symbol id="i-send" viewBox="0 0 16 16"><path d="M14.67 1.33 7.33 8.67M14.67 1.33 10 14.67l-2.67-6-6-2.67z"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 16 16"><path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7.33" width="10" height="6.67" rx="1.33"/><path d="M5.33 7.33V4.67a2.67 2.67 0 0 1 5.34 0v2.66"/></symbol>
+</svg>
+
+<!--
+  ════════════════════════════════════════════════════════════════
+  (B) Cole esta linha dentro do <script>, logo abaixo de
+        const esc = s => ...
+      Ela cria o gerador de ícones usado nas substituições da Peça 3.
+  ════════════════════════════════════════════════════════════════
+
+  const ic = n => '<svg class="ic"><use href="#i-'+n+'"/></svg>';
+-->
